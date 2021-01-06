@@ -134,12 +134,12 @@ std::list<char> algorithm::aStar2(std::pair<int,int> start,std::pair<int,int> go
 		}
 		return _path;
 	};
+	int counter=0;
 	while(qqueue.size()!=0){
-		if(qqueue.size()>1000){
+		++counter;
+		if(counter>10000){
 			break;//防止搜尋過長
-
-		}
-			
+		}	
 		bool find_goal=false;
 		treeNode *headNode=qqueue.top();//輸出最短路徑
 		auto vSnake=headNode->getCurrSnake(Obj->getSnake_length()+1);//取得演算法中蛇的位置
@@ -167,11 +167,12 @@ std::list<char> algorithm::aStar2(std::pair<int,int> start,std::pair<int,int> go
 				qqueue.push(buf);//新路徑加到最後
 				if((nodeIter->first)==goal){//是否找到食物
 					auto xxxxx=buf->getCurrSnake(Obj->getSnake_length()+1);
-					qInfo()<<"row "<<xxxxx;
+					//qInfo()<<"row "<<xxxxx;
 					if(find_tail(fullSnake(buf->getCurrSnake(Obj->getSnake_length()+1)))){//短路徑後半段會有問題
 						find_goal=true;
 						result=buf->getDireList();//儲存紀錄
 						food_buf=true;//紀錄有吃到食物
+						qInfo()<<"row "<<fullSnake(buf->getCurrSnake(Obj->getSnake_length()+1));
 						//for(auto &xx:vSnake)qInfo()<<xx;
 					}
 				}
@@ -215,7 +216,7 @@ double algorithm::manhattanDistance(std::pair<int,int> start,std::pair<int,int> 
 }
 char algorithm::stroll(std::vector<std::pair<int,int>> snake,std::pair<int,int> food){//漫遊 找尾未完成
 	auto curr_position=*snake.begin();
-	auto ss=Obj->nextStep(curr_position,0);//ss是下個步伐集
+	auto ss=Obj->nextStep(curr_position,1);//ss是下個步伐集
 	qInfo()<<"dire";
 	qInfo()<<ss;
 	if(ss.size()!=0){
@@ -242,7 +243,7 @@ char algorithm::stroll(std::vector<std::pair<int,int>> snake,std::pair<int,int> 
 				}
 			}
 		}
-		qInfo()<<output;
+		qInfo()<<"ddiirreee"<<output;
 		food_buf=false;
 		return output;
 	}else{
@@ -252,7 +253,7 @@ char algorithm::stroll(std::vector<std::pair<int,int>> snake,std::pair<int,int> 
 	}
 }
 bool algorithm::find_tail(std::vector<std::pair<int,int>> snake,bool grow){
-	qInfo()<<snake;
+	//qInfo()<<snake;
 	std::priority_queue<treeNode*,std::vector<treeNode*>,less_t<treeNode*>> qqueue;//優先Queue
 	auto goal=*(snake.end()-1);//蛇的尾巴是終點
 	treeNode *n0=new treeNode(*snake.begin(),goal,'N',nullptr);//蛇的頭是搜尋起點
@@ -268,7 +269,7 @@ bool algorithm::find_tail(std::vector<std::pair<int,int>> snake,bool grow){
 		}
 		return _path;
 	};
-	if(grow){
+	if(grow){//防尾追撞 grow表上一動有吃東西
 		if(manhattanDistance(*snake.begin(),*(snake.end()-1))<=1){
 			auto head=snake.begin();
 			bool xx=false;
@@ -284,12 +285,20 @@ bool algorithm::find_tail(std::vector<std::pair<int,int>> snake,bool grow){
 				if(node.first>(Obj->width)||node.second>(Obj->height)){
 					break;
 				}
-				if(std::find(snake.begin(),snake.end(),node)==snake.end()){
+				if(std::find(snake.begin(),snake.end()-1,node)==snake.end()-1){//除了尾巴以外生體不能撞
+					//虛擬snake合成
+					/*auto tsnake=snake;
+					tsnake.pop_back();
+					tsnake.insert(tsnake.begin(),node);
+					xx=find_tail(tsnake,false);*/
+					break;
+				}
+				if(node==*(snake.end()-1)){
 					//虛擬snake合成
 					auto tsnake=snake;
 					tsnake.pop_back();
 					tsnake.insert(tsnake.begin(),node);
-					xx=find_tail(tsnake,false);
+					xx=find_tail(tsnake,true);
 					break;
 				}
 			}

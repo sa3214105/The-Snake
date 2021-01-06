@@ -113,6 +113,9 @@ food::food(map *_map,int _pix_size=10):pix_size(_pix_size){
 	next_food();
 }
 void food::next_food(){
+	if((Fmap->getBody().size()+1)>=(Fmap->getWidth()*Fmap->getHeight())-1){
+		return;
+	}
 	int x=random({0,Fmap->getHeight()-1});
 	int y=random({0,Fmap->getWidth()-1});
 	//int x=rand()%Fmap->getHeight();
@@ -124,7 +127,10 @@ void food::next_food(){
 	}
 	auto xx=Fmap->getBody();
 	auto tail=*(Fmap->getBody().end()-1);
-	if(manhattanDistance(position,tail)<1.42&&(Fmap->getBody().size()+1)<Fmap->getWidth()*Fmap->getHeight()-2){
+	if((Fmap->getBody().size()+1)>=Fmap->getWidth()*Fmap->getHeight()-3){
+		return;
+	}
+	if(manhattanDistance(position,tail)<1.42){
 		next_food();
 	}
 	//position=buf;

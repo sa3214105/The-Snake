@@ -41,15 +41,15 @@ class Screen : public QWidget
 		std::vector<std::pair<std::pair<int,int>,char>> nextStep(std::pair<int,int> curr,int layer,std::vector<std::pair<int,int>> c_snake);
 		int getSnake_length();
 		std::vector<std::pair<int,int>> getSnake();
-		int width=9;
-		int height=9;
+		int width=8;
+		int height=8;
 	protected:
 		void paintEvent(QPaintEvent *);
 		QTimer *timer;
 	private:
 
 		int size=20;
-		int gameSpeed=20;
+		int gameSpeed=5;
 		std::unique_ptr<map> map_dp=std::make_unique<map>(width,height,size);
 		char dire='U';
 		bool automatic=false;
