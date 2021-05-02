@@ -4,7 +4,7 @@
 - C++
 - QT
 ## 程式演示
-![x](https://github.com/sa3214105/The-Snake/blob/master/image/rdjlv-m3qjg.gif width="250" height="250")
+![x](https://github.com/sa3214105/The-Snake/blob/master/image/rdjlv-m3qjg.gif width="2500" height="2500")
 ## 演算法及實作內容
 
 ## 免安裝QT包裝後的檔案
